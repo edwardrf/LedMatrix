@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 74HC238
+D Decoder 3 to 8 (active high outputs)
+K TTL DECOD DECOD8
+$ENDCMP
+#
+#End Doc Library

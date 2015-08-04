@@ -1,0 +1,9 @@
+(fp_lib_table
+  (lib (name 1088bs)(type KiCad)(uri "$(KIPRJMOD)/lib/1088bs.pretty")(options "")(descr ""))
+  (lib (name CSTCE8M)(type KiCad)(uri "$(KIPRJMOD)/lib/CSTCE8M.pretty")(options "")(descr ""))
+  (lib (name ADXL345)(type KiCad)(uri "$(KIPRJMOD)/lib/ADXL345.pretty")(options "")(descr ""))
+  (lib (name 1P2T)(type KiCad)(uri "$(KIPRJMOD)/lib/1P2T.pretty")(options "")(descr ""))
+  (lib (name SideButton)(type KiCad)(uri "$(KIPRJMOD)/lib/SideButton.pretty")(options "")(descr ""))
+  (lib (name MP34DT01)(type KiCad)(uri "$(KIPRJMOD)/lib/MP34DT01.pretty")(options "")(descr ""))
+  (lib (name CR2032)(type KiCad)(uri "$(KIPRJMOD)/lib/CR2032.pretty")(options "")(descr ""))
+)
