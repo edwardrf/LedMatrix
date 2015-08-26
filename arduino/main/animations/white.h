@@ -1,6 +1,6 @@
 #include "../animation.h"
 
-unsigned int whiteTiming[] = {2000};
+unsigned int whiteTiming[] = {200};
 Frame whiteFrames[]= {
     Frame(
       0xFFFFFFFF,

@@ -1,6 +1,6 @@
 #include "../animation.h"
 
-unsigned int waveTiming[] = {200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200};
+unsigned int waveTiming[] = {50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50};
 Frame waveFrames[]= {
     Frame(
       0x30000000,
