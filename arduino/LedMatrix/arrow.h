@@ -1,4 +1,4 @@
-#include "../animation.h"
+#include "animation.h"
 #include <avr/pgmspace.h>
 
 const Frame arrowFrames[] PROGMEM = {

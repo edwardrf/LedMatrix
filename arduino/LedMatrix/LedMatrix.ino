@@ -4,7 +4,6 @@
 #include "arrow.h"
 #include "fade.h"
 #include "led.h"
-#include <TimerOne.h>
 #include <ADXL345.h>
 
 #define SOUND_IN A7

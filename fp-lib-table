@@ -7,4 +7,6 @@
   (lib (name MP34DT01)(type KiCad)(uri "$(KIPRJMOD)/lib/MP34DT01.pretty")(options "")(descr ""))
   (lib (name CR2032)(type KiCad)(uri "$(KIPRJMOD)/lib/CR2032.pretty")(options "")(descr ""))
   (lib (name SSOP18)(type KiCad)(uri "$(KIPRJMOD)/lib/SSOP18.pretty")(options "")(descr ""))
+  (lib (name EXBS8V)(type KiCad)(uri "$(KIPRJMOD)/lib/EXBS8V.pretty")(options "")(descr ""))
+  (lib (name pnj4k01f)(type KiCad)(uri "$(KIPRJMOD)/lib/pnj4k01f.pretty")(options "")(descr ""))
 )
