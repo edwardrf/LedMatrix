@@ -1,324 +1,215 @@
 #include "../animation.h"
+#include <avr/pgmspace.h>
 
-unsigned int fadeTiming[] = {
-  300, 300, 300, 300, 300, 300, 300, 300,
-  300, 300, 300, 300, 300, 300, 300, 300
-  // 100, 100, 100, 100, 100, 100, 100, 100,
-  // 100, 100, 100, 100, 100, 100, 100
-};
-
-Frame fadeFrames[]= {
-    Frame(
-      0x00000000,
-      0x00000000,
-      0x00000000,
-      0x00000000,
-      0x00000000,
-      0x00000000,
-      0x00000000,
-      0x00000000
-    ),
-    Frame(
-      0x11111111,
-      0x11111111,
-      0x11111111,
-      0x11111111,
-      0x11111111,
-      0x11111111,
-      0x11111111,
-      0x11111111
-    ),
-    Frame(
-      0x22222222,
-      0x22222222,
-      0x22222222,
-      0x22222222,
-      0x22222222,
-      0x22222222,
-      0x22222222,
-      0x22222222
-    ),
-    Frame(
-      0x33333333,
-      0x33333333,
-      0x33333333,
-      0x33333333,
-      0x33333333,
-      0x33333333,
-      0x33333333,
-      0x33333333
-    ),
-    Frame(
-      0x44444444,
-      0x44444444,
-      0x44444444,
-      0x44444444,
-      0x44444444,
-      0x44444444,
-      0x44444444,
-      0x44444444
-    ),
-    Frame(
-      0x55555555,
-      0x55555555,
-      0x55555555,
-      0x55555555,
-      0x55555555,
-      0x55555555,
-      0x55555555,
-      0x55555555
-    ),
-    Frame(
-      0x66666666,
-      0x66666666,
-      0x66666666,
-      0x66666666,
-      0x66666666,
-      0x66666666,
-      0x66666666,
-      0x66666666
-    ),
-    Frame(
-      0x77777777,
-      0x77777777,
-      0x77777777,
-      0x77777777,
-      0x77777777,
-      0x77777777,
-      0x77777777,
-      0x77777777
-    ),
-    Frame(
-      0x88888888,
-      0x88888888,
-      0x88888888,
-      0x88888888,
-      0x88888888,
-      0x88888888,
-      0x88888888,
-      0x88888888
-    ),
-    Frame(
-      0x99999999,
-      0x99999999,
-      0x99999999,
-      0x99999999,
-      0x99999999,
-      0x99999999,
-      0x99999999,
-      0x99999999
-    ),
-    Frame(
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA,
-      0xAAAAAAAA
-    ),
-    Frame(
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB,
-      0xBBBBBBBB
-    ),
-    Frame(
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC,
-      0xCCCCCCCC
-    ),
-    Frame(
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD,
-      0xDDDDDDDD
-    ),
-    Frame(
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE,
-      0xEEEEEEEE
-    ),
-    Frame(
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF
-    )
-    // ,
-    // Frame(
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE,
-    //   0xEEEEEEEE
-    // ),
-    // Frame(
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD,
-    //   0xDDDDDDDD
-    // ),
-    // Frame(
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC,
-    //   0xCCCCCCCC
-    // ),
-    // Frame(
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB,
-    //   0xBBBBBBBB
-    // ),
-    // Frame(
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA,
-    //   0xAAAAAAAA
-    // ),
-    // Frame(
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999,
-    //   0x99999999
-    // ),
-    // Frame(
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888,
-    //   0x88888888
-    // ),
-    // Frame(
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777,
-    //   0x77777777
-    // ),
-    // Frame(
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666,
-    //   0x66666666
-    // ),
-    // Frame(
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555,
-    //   0x55555555
-    // ),
-    // Frame(
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444,
-    //   0x44444444
-    // ),
-    // Frame(
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333,
-    //   0x33333333
-    // ),
-    // Frame(
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222,
-    //   0x22222222
-    // ),
-    // Frame(
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111,
-    //   0x11111111
-    // ),
-    // Frame(
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000,
-    //   0x00000000
-    // )
+const Frame fadeFrames[] PROGMEM = {
+    {
+      {
+        0x00000000,
+        0x00000000,
+        0x00000000,
+        0x00000000,
+        0x00000000,
+        0x00000000,
+        0x00000000,
+        0x00000000
+      },
+      300
+    },
+    {
+      {
+        0x11111111,
+        0x11111111,
+        0x11111111,
+        0x11111111,
+        0x11111111,
+        0x11111111,
+        0x11111111,
+        0x11111111
+      },
+      300
+    },
+    {
+      {
+        0x22222222,
+        0x22222222,
+        0x22222222,
+        0x22222222,
+        0x22222222,
+        0x22222222,
+        0x22222222,
+        0x22222222
+      },
+      300
+    },
+    {
+      {
+        0x33333333,
+        0x33333333,
+        0x33333333,
+        0x33333333,
+        0x33333333,
+        0x33333333,
+        0x33333333,
+        0x33333333
+      },
+      300
+    },
+    {
+      {
+        0x44444444,
+        0x44444444,
+        0x44444444,
+        0x44444444,
+        0x44444444,
+        0x44444444,
+        0x44444444,
+        0x44444444
+      },
+      300
+    },
+    {
+      {
+        0x55555555,
+        0x55555555,
+        0x55555555,
+        0x55555555,
+        0x55555555,
+        0x55555555,
+        0x55555555,
+        0x55555555
+      },
+      300
+    },
+    {
+      {
+        0x66666666,
+        0x66666666,
+        0x66666666,
+        0x66666666,
+        0x66666666,
+        0x66666666,
+        0x66666666,
+        0x66666666
+      },
+      300
+    },
+    {
+      {
+        0x77777777,
+        0x77777777,
+        0x77777777,
+        0x77777777,
+        0x77777777,
+        0x77777777,
+        0x77777777,
+        0x77777777
+      },
+      300
+    },
+    {
+      {
+        0x88888888,
+        0x88888888,
+        0x88888888,
+        0x88888888,
+        0x88888888,
+        0x88888888,
+        0x88888888,
+        0x88888888
+      },
+      300
+    },
+    {
+      {
+        0x99999999,
+        0x99999999,
+        0x99999999,
+        0x99999999,
+        0x99999999,
+        0x99999999,
+        0x99999999,
+        0x99999999
+      },
+      300
+    },
+    {
+      {
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA,
+        0xAAAAAAAA
+      },
+      300
+    },
+    {
+      {
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB,
+        0xBBBBBBBB
+      },
+      300
+    },
+    {
+      {
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC,
+        0xCCCCCCCC
+      },
+      300
+    },
+    {
+      {
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD,
+        0xDDDDDDDD
+      },
+      300
+    },
+    {
+      {
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE,
+        0xEEEEEEEE
+      },
+      300
+    },
+    {
+      {
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF
+      },
+      300
+    }
   };
 
-Animation fade(16, fadeTiming, fadeFrames);
+Animation fade = {16, fadeFrames};

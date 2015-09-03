@@ -1,4 +1,4 @@
-update=Tue 04 Aug 2015 09:28:17 PM CST
+update=Tue 01 Sep 2015 10:35:39 PM CST
 version=1
 last_client=kicad
 [pcbnew]
@@ -65,3 +65,4 @@ LibName33=lib/m54562fp
 LibName34=lib/mp34dt01
 LibName35=lib/adxl345
 LibName36=lib/td62083afng
+LibName37=lib/pnj4k01f

@@ -51,7 +51,7 @@ void setup(){
   TCCR2B = _BV(WGM22) | _BV(CS20);
   OCR2A = 1;
 
-  // Serial.begin(115200);k
+  // Serial.begin(115200);
 }
 
 unsigned long lastAccCheck = 0;
@@ -96,7 +96,7 @@ void loop(){
   // soundLevel = soundLevel *
   // snd = snd > 338 ? snd - 338 : 338 - snd;
   int diff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
-  if(currentMode == NORMAL && diff > 8) {
+  if(currentMode == NORMAL && diff > 12) {
     // Serial.print("Sound "); Serial.print(snd);
     // Sound wake up code here
     // Serial.print("\t"); Serial.println(soundLevel);

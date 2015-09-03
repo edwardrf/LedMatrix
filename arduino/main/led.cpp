@@ -1,6 +1,7 @@
 #include "led.h"
 
 Animation * animation;
+Frame currentFrame;
 volatile unsigned int framePointer;
 volatile unsigned char pwmCounter;
 volatile unsigned char linePointer;
@@ -34,7 +35,7 @@ void initLed() {
   pinMode(A3, OUTPUT);
   // digitalWrite(A3, HIGH);
 
-  Timer1.initialize(100);
+  Timer1.initialize(50);
   Timer1.attachInterrupt(updateDisplay);
   Timer1.stop();
 }
@@ -44,6 +45,8 @@ void setAnimation(Animation * a, bool loopAnimation) {
   framePointer = 0;
   pwmCounter = 0;
   linePointer = 0;
+  memcpy_P(&currentFrame, &(animation->frames[framePointer]), sizeof(Frame));
+  _prepareFrame();
   repeat = loopAnimation;
 }
 
@@ -71,17 +74,17 @@ void resumeAnimation() {
 
 void updateFrame() {
   unsigned long t = millis();
-  // Timer1.stop();   // Stop the timer while prepare the frame
-  if(running && t - frameStartTime > animation->getFrameTiming(framePointer)) {
+  if(running && t - frameStartTime > currentFrame.frameTime) {
     // Preapre the next frame
     framePointer ++;
-    if(framePointer >= animation->getFrameCount()) {
+    if(framePointer >= animation->frameCount) {
       if(repeat == true) {
         framePointer = 0;
       }else {
-        framePointer = animation->getFrameCount() - 1;
+        framePointer = animation->frameCount - 1;
       }
     }
+    memcpy_P(&currentFrame, &(animation->frames[framePointer]), sizeof(Frame));
     _prepareFrame();
     frameStartTime = t;
   }
@@ -108,76 +111,59 @@ void updateDisplay(){
 }
 
 void _prepareFrame() {
-  Frame tmpf = animation->getFrame(framePointer);
-
-  // for(unsigned char i = 0; i < 15; i++) {
-  //   unsigned long * data = tmpf.getData();
-  //   for(unsigned char j = 0; j < 8; j++) {
-  //     unsigned char b = 0;
-  //     for(unsigned char k = 0; k < 8; k++) {
-  //       b <<= 1;
-  //       if(data[k] & masks[j]) b++;
-  //     }
-  //     frameBuffer[i][7-j] = b;
-  //   }
-  // }
-
+  Frame tmpf = currentFrame;
 
   switch(orientation) {
   case ORI_UP:
     for(unsigned char i = 0; i < 15; i++) {
-      unsigned long * data = tmpf.getData();
       for(unsigned char j = 0; j < 8; j++) {
         unsigned char b = 0;
         for(unsigned char k = 0; k < 8; k++) {
           b <<= 1;
-          if(data[j] & masks[7-k]) b++;
+          if(tmpf.data[j] & masks[7-k]) b++;
         }
         frameBuffer[i][7-j] = b;
       }
-      tmpf.fade();
+      frameFade(&tmpf);
     }
     break;
   case ORI_DOWN:
     for(unsigned char i = 0; i < 15; i++) {
-      unsigned long * data = tmpf.getData();
       for(unsigned char j = 0; j < 8; j++) {
         unsigned char b = 0;
         for(unsigned char k = 0; k < 8; k++) {
           b <<= 1;
-          if(data[7-j] & masks[k]) b++;
+          if(tmpf.data[7-j] & masks[k]) b++;
         }
         frameBuffer[i][7-j] = b;
       }
-      tmpf.fade();
+      frameFade(&tmpf);
     }
     break;
   case ORI_LEFT:
     for(unsigned char i = 0; i < 15; i++) {
-      unsigned long * data = tmpf.getData();
       for(unsigned char j = 0; j < 8; j++) {
         unsigned char b = 0;
         for(unsigned char k = 0; k < 8; k++) {
           b <<= 1;
-          if(data[k] & masks[j]) b++;
+          if(tmpf.data[k] & masks[j]) b++;
         }
         frameBuffer[i][7-j] = b;
       }
-      tmpf.fade();
+      frameFade(&tmpf);
     }
     break;
   case ORI_RIGHT:
     for(unsigned char i = 0; i < 15; i++) {
-      unsigned long * data = tmpf.getData();
       for(unsigned char j = 0; j < 8; j++) {
         unsigned char b = 0;
         for(unsigned char k = 0; k < 8; k++) {
           b <<= 1;
-          if(data[7-k] & masks[7-j]) b++;
+          if(tmpf.data[7-k] & masks[7-j]) b++;
         }
         frameBuffer[i][7-j] = b;
       }
-      tmpf.fade();
+      frameFade(&tmpf);
     }
     break;
   }

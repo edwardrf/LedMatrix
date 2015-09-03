@@ -1,17 +1,20 @@
 #include "../animation.h"
+#include <avr/pgmspace.h>
 
-unsigned int whiteTiming[] = {200};
-Frame whiteFrames[]= {
-    Frame(
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF,
-      0xFFFFFFFF
-    )
+const Frame whiteFrames[] PROGMEM = {
+    {
+      {
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF,
+        0xFFFFFFFF
+      },
+      1000
+    }
   };
 
-Animation white(1, whiteTiming, whiteFrames);
+Animation white = {1, whiteFrames};
