@@ -9,6 +9,7 @@ volatile bool repeat;
 volatile bool running;
 volatile unsigned long frameStartTime;
 volatile unsigned char frameBuffer[15][8];
+volatile uint8_t brightness = 8, bCnt = 0;
 volatile Orientation orientation;
 
 // Somehow arduino make file duplicates definiation when this is placed in .h file
@@ -27,6 +28,11 @@ void setOrientation(Orientation o) {
   orientation = o;
 }
 
+void setBrightness(uint8_t b) {
+  brightness = b;
+  if(brightness > 8) brightness = 8;
+}
+
 void initLed() {
   DDRD   = B11111111; // Whole port D is output
   PORTD  = B00000000; // Turn off all led HIGH side
@@ -35,7 +41,7 @@ void initLed() {
   pinMode(A3, OUTPUT);
   // digitalWrite(A3, HIGH);
 
-  Timer1.initialize(50);
+  Timer1.initialize(15);
   Timer1.attachInterrupt(updateDisplay);
   Timer1.stop();
 }
@@ -55,6 +61,7 @@ void startAnimation() {
   Timer1.start();
   digitalWrite(A3, HIGH);
   frameStartTime = millis();
+  bCnt = 0;
 }
 
 void stopAnimation() {
@@ -91,23 +98,28 @@ void updateFrame() {
 }
 
 void updateDisplay(){
-  // Turn on a row of LED
-  // Turn on the LOW side controlled by 74hc238, multplexer followd by darlingtons
-  PORTD = 0;
-  PORTB &= B11111000;   // Clear
-  PORTB |= linePointer; // Then set
-  // Turn on the HIGH side through PORTD
-  PORTD = frameBuffer[pwmCounter][linePointer];
+  if(bCnt == 0){
+    // Turn on a row of LED
+    // Turn on the LOW side controlled by 74hc238, multplexer followd by darlingtons
+    PORTD = 0;
+    PORTB &= B11111000;   // Clear
+    PORTB |= linePointer; // Then set
+    // Turn on the HIGH side through PORTD
+    PORTD = frameBuffer[pwmCounter][linePointer];
 
-  // Advance to next line
-  linePointer ++;
-  if(linePointer >= 8) {
-    linePointer = 0;
-    pwmCounter ++;
-    if(pwmCounter >= 15) {
-      pwmCounter = 0;
+    // Advance to next line
+    linePointer ++;
+    if(linePointer >= 8) {
+      linePointer = 0;
+      pwmCounter ++;
+      if(pwmCounter >= 15) {
+        pwmCounter = 0;
+      }
     }
+  }else if(bCnt > brightness) {
+    PORTD = 0;
   }
+  if(bCnt++ > 8) bCnt = 0;
 }
 
 void _prepareFrame() {

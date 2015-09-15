@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "animation.h"
 #include <TimerOne.h>
 
@@ -10,6 +11,7 @@ enum Orientation {
 
 void initLed();
 void setAnimation(Animation * a, bool loopAnimation);
+void setBrightness(uint8_t b);
 void setOrientation(Orientation o);
 void startAnimation();
 void stopAnimation();

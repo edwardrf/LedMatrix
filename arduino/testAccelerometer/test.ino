@@ -57,17 +57,18 @@ void loop() {
   Serial.print("accel:\t");
   Serial.print(ax); Serial.print("\t");
   Serial.print(ay); Serial.print("\t");
-  Serial.print(az); Serial.println();
-
-    // Serial.print("\tSound:\t");
-    // Serial.println(v);
-  if((v > lv && v - lv > 8) || (v < lv && lv - v > 8)) {
-  // if(v - 338 > 3 || 338 - v > 3) {
-    Serial.print("\t======= DELTA Sound:\t");
-    Serial.println(v - lv);
-    // Serial.print("\tLight:\t");
-    // Serial.println(v2);
-  }
+  Serial.print(az); //Serial.println();
+  Serial.print("\tLIGHT === \t");
+  Serial.print(analogRead(A6));
+  Serial.print("\tSound:\t");
+  Serial.println(v);
+  // if((v > lv && v - lv > 8) || (v < lv && lv - v > 8)) {
+  // // if(v - 338 > 3 || 338 - v > 3) {
+  //   Serial.print("\t======= DELTA Sound:\t");
+  //   Serial.println(v - lv);
+  //   Serial.print("\tLight:\t");
+  //   Serial.println(v2);
+  // }
   lv = v;
 
   // blink LED to indicate activity

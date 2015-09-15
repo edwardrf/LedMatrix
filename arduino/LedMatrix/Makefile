@@ -4,6 +4,6 @@ BOARD_TAG     = pro328
 MONITOR_PORT  = /dev/ttyUSB*
 ISP_PROG     	= usbasp
 USER_LIB_PATH = $(realpath ./lib)
-ARDUINO_LIBS  = TimerOne ADXL345 I2Cdev Wire
+ARDUINO_LIBS  = TimerOne ADXL345 I2Cdev Wire EEPROM
 
 include /usr/share/arduino/Arduino.mk

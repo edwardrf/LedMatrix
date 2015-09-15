@@ -5,6 +5,7 @@
 #include "fade.h"
 #include "led.h"
 #include <ADXL345.h>
+#include <EEPROM.h>
 
 #define SOUND_IN A7
 #define LIGHT_IN A6
@@ -28,12 +29,25 @@ void setup(){
   toMode = NORMAL;
   // setAnimation(&animations[3], true);
   startAnimation();
-
+  setBrightness(1);
   // Initialize accelerometer
   TWBR = ((F_CPU / 400000) - 16) / 2; // faster 400khz I2C, rather than the default 100khz
   Wire.begin();
   accel.initialize();
-  accel.setOffset(-54, -38, -47);
+
+  // ==== NEW CODE ===
+  // Retrive previous calibration value if exists
+  int8_t calibrated = EEPROM.read(0);
+  int8_t xoffset = 0;
+  int8_t yoffset = 0;
+  int8_t zoffset = 0;
+  if(calibrated == 0xCA){
+    xoffset = EEPROM.read(1);
+    yoffset = EEPROM.read(2);
+    zoffset = EEPROM.read(3);
+    accel.setOffset(xoffset, yoffset, zoffset);
+  }
+
 
   // Test if accelerometer is working correctly
   hasAccel = accel.testConnection();
@@ -51,7 +65,7 @@ void setup(){
   TCCR2B = _BV(WGM22) | _BV(CS20);
   OCR2A = 1;
 
-  // Serial.begin(115200);
+  // Serial.begin(9600);
 }
 
 unsigned long lastAccCheck = 0;
@@ -73,21 +87,17 @@ void loop(){
     // Deduce orientation, we only care about x and y orientation
     mx = ax > 0 ? ax : -ax;
     my = ay > 0 ? ay : -ay;
-    if(my >= mx) {
-      if(ay > 0) o = ORI_DOWN; else o = ORI_UP;
-    }else {
-      if(ax > 0) o = ORI_RIGHT; else o = ORI_LEFT;
+    // ==== NEW CODE ===
+    int diff = my > mx ? my - mx : mx - my;
+    if(diff > 150) {
+      if(my >= mx) {
+        if(ay > 0) o = ORI_DOWN; else o = ORI_UP;
+      }else {
+        if(ax > 0) o = ORI_RIGHT; else o = ORI_LEFT;
+      }
+      setOrientation(o);
     }
-    setOrientation(o);
 
-    // Serial.print("accel:\t");
-    // Serial.print(ax); Serial.print("\t");
-    // Serial.print(ay); Serial.print("\t");
-    // Serial.print(az); Serial.print("\t");
-    // Serial.println(o);
-    // if(o == ORI_LEFT) {
-    //   setAnimation(&animations[0], true);
-    // }
     lastAccCheck = t;
   }
 
@@ -96,7 +106,7 @@ void loop(){
   // soundLevel = soundLevel *
   // snd = snd > 338 ? snd - 338 : 338 - snd;
   int diff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
-  if(currentMode == NORMAL && diff > 12) {
+  if(currentMode == NORMAL && diff > 20) {
     // Serial.print("Sound "); Serial.print(snd);
     // Sound wake up code here
     // Serial.print("\t"); Serial.println(soundLevel);
@@ -109,6 +119,7 @@ void loop(){
   int lit = analogRead(LIGHT_IN);
   if(lit > 500) {
     // Light wake up code here
+    // Serial.println(lit);
   }
 
   // Return to normal mode after 2 seconds of interruption
@@ -126,6 +137,7 @@ void loop(){
       break;
     case SOUND_INT:
       setAnimation(&animations[2], true);
+      // setAnimation(&animations[2], true);
       break;
     case LIGHT_INT:
       setAnimation(&animations[0], true);
