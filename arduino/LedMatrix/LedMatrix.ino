@@ -3,6 +3,7 @@
 #include "white.h"
 #include "arrow.h"
 #include "fade.h"
+#include "heart.h"
 #include "led.h"
 #include <ADXL345.h>
 #include <EEPROM.h>
@@ -12,7 +13,7 @@
 
 ADXL345 accel;
 
-Animation animations[] = {wave, white, arrow, fade};
+Animation animations[] = {wave, white, arrow, fade, heart};
 bool hasAccel = false;
 enum Mode {
   NOTHING,
@@ -22,6 +23,7 @@ enum Mode {
 };
 
 Mode toMode, currentMode;
+double normalSpeed = 1.0, speed = 1.0;
 
 void setup(){
   // Initialize LED display
@@ -30,6 +32,7 @@ void setup(){
   // setAnimation(&animations[3], true);
   startAnimation();
   setBrightness(1);
+  // setSpeed(0.8);
   // Initialize accelerometer
   TWBR = ((F_CPU / 400000) - 16) / 2; // faster 400khz I2C, rather than the default 100khz
   Wire.begin();
@@ -65,7 +68,7 @@ void setup(){
   TCCR2B = _BV(WGM22) | _BV(CS20);
   OCR2A = 1;
 
-  // Serial.begin(9600);
+  // Serial.begin(115200);
 }
 
 unsigned long lastAccCheck = 0;
@@ -78,9 +81,23 @@ void loop(){
   // in the animation
   updateFrame();
 
+  // Check Sound
+  int snd = analogRead(SOUND_IN);
+  int sndDiff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
+  if(sndDiff > 30) speed = 0.2; // Faster beat
+  soundLevel = (soundLevel * 90 + snd * 10) / 100;
+
+  // Check Light
+  int lit = analogRead(LIGHT_IN);
+  if(lit < 500) {
+    normalSpeed = 1.5;
+  }else {
+    normalSpeed = 1.0;
+  }
+
   // Check accelerometer
   unsigned long t = millis();
-  if(lastAccCheck - t > 100) {
+  if(lastAccCheck - t > 200) {
     int16_t ax, ay, az, mx, my;
     Orientation o;
     accel.getAcceleration(&ax, &ay, &az);
@@ -98,29 +115,14 @@ void loop(){
       setOrientation(o);
     }
 
+    speed = (speed * 99 + normalSpeed) / 100;
+    setSpeed(speed);
+    // Serial.println(speed);
+
     lastAccCheck = t;
   }
 
-  // Check Sound
-  int snd = analogRead(SOUND_IN);
-  // soundLevel = soundLevel *
-  // snd = snd > 338 ? snd - 338 : 338 - snd;
-  int diff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
-  if(currentMode == NORMAL && diff > 20) {
-    // Serial.print("Sound "); Serial.print(snd);
-    // Sound wake up code here
-    // Serial.print("\t"); Serial.println(soundLevel);
-    toMode = SOUND_INT;
-    // setAnimation(&animations[2], true);
-  }
-  soundLevel = (soundLevel * 90 + snd * 10) / 100;
 
-  // Check Light
-  int lit = analogRead(LIGHT_IN);
-  if(lit > 500) {
-    // Light wake up code here
-    // Serial.println(lit);
-  }
 
   // Return to normal mode after 2 seconds of interruption
   if(currentMode != NORMAL && t - intStart > 2000) {
@@ -133,7 +135,7 @@ void loop(){
     // Serial.print("================Switch to mode "); Serial.print(toMode); Serial.print("\t"); Serial.println(intStart);
     switch(toMode) {
     case NORMAL:
-      setAnimation(&animations[0], true);
+      setAnimation(&animations[4], true);
       break;
     case SOUND_INT:
       setAnimation(&animations[2], true);

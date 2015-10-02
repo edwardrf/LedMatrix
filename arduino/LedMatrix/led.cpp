@@ -10,6 +10,7 @@ volatile bool running;
 volatile unsigned long frameStartTime;
 volatile unsigned char frameBuffer[15][8];
 volatile uint8_t brightness = 8, bCnt = 0;
+volatile float speedFactor = 1.0;
 volatile Orientation orientation;
 
 // Somehow arduino make file duplicates definiation when this is placed in .h file
@@ -31,6 +32,10 @@ void setOrientation(Orientation o) {
 void setBrightness(uint8_t b) {
   brightness = b;
   if(brightness > 8) brightness = 8;
+}
+
+void setSpeed(float factor) {
+  speedFactor = factor;
 }
 
 void initLed() {
@@ -81,7 +86,7 @@ void resumeAnimation() {
 
 void updateFrame() {
   unsigned long t = millis();
-  if(running && t - frameStartTime > currentFrame.frameTime) {
+  if(running && t - frameStartTime > currentFrame.frameTime * speedFactor) {
     // Preapre the next frame
     framePointer ++;
     if(framePointer >= animation->frameCount) {

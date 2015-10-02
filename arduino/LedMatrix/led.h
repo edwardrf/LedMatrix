@@ -12,6 +12,7 @@ enum Orientation {
 void initLed();
 void setAnimation(Animation * a, bool loopAnimation);
 void setBrightness(uint8_t b);
+void setSpeed(float factor);
 void setOrientation(Orientation o);
 void startAnimation();
 void stopAnimation();
