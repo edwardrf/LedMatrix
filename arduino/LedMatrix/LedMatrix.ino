@@ -6,12 +6,13 @@
 #include "heart.h"
 #include "led.h"
 #include <ADXL345.h>
+#include <APDS9900.h>
 #include <EEPROM.h>
 
 #define SOUND_IN A7
-#define LIGHT_IN A6
 
 ADXL345 accel;
+APDS9900 apds;
 
 Animation animations[] = {wave, white, arrow, fade, heart};
 bool hasAccel = false;
@@ -59,21 +60,24 @@ void setup(){
   }
 
   // Initialize the microphone
-  pinMode(11, OUTPUT);
+  // pinMode(11, OUTPUT);
   // Set up the 2Mhz output
   // WGM2 [2:0] = 111 ==> fast PWM
   // COM2A[1:0] =  01 ==> toggle OC2A when reach OCR2A
   // OCR2A      =   1 ==> count 2 number before toggle (0, 1), thus giving a frequency of 8Mhz / 2 / 2 = 2Mhz
-  TCCR2A = _BV(COM2A0) | _BV(WGM21) | _BV(WGM20);
-  TCCR2B = _BV(WGM22) | _BV(CS20);
-  OCR2A = 1;
+  // TCCR2A = _BV(COM2A0) | _BV(WGM21) | _BV(WGM20);
+  // TCCR2B = _BV(WGM22) | _BV(CS20);
+  // OCR2A = 1;
 
   // Serial.begin(115200);
+  // Serial.println("Starting");
 }
 
 unsigned long lastAccCheck = 0;
 unsigned long intStart = 0;
 double soundLevel = 0;
+unsigned int lightLevel = 0;
+bool lightChecked = 0;
 
 void loop(){
   // Update to next frame when necessary, this has to be called
@@ -84,20 +88,32 @@ void loop(){
   // Check Sound
   int snd = analogRead(SOUND_IN);
   int sndDiff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
-  if(sndDiff > 30) speed = 0.2; // Faster beat
+  if(sndDiff > 30){
+    speed = 0.2; // Faster beat
+  }
   soundLevel = (soundLevel * 90 + snd * 10) / 100;
 
   // Check Light
-  int lit = analogRead(LIGHT_IN);
-  if(lit < 500) {
-    normalSpeed = 1.5;
-  }else {
-    normalSpeed = 1.0;
-  }
+  // int lit = analogRead(LIGHT_IN);
+  // if(lit < 500) {
+  //   normalSpeed = 1.5;
+  // }else {
+  //   normalSpeed = 1.0;
+  // }
 
-  // Check accelerometer
+  // Check accelerometer and light using 12c
   unsigned long t = millis();
   if(lastAccCheck - t > 200) {
+
+    if(lightChecked) {
+      lightLevel = apds.getLux();
+      // Serial.println(lightLevel);
+      lightChecked = false;
+    }else {
+      apds.initialize();
+      lightChecked = true;
+    }
+
     int16_t ax, ay, az, mx, my;
     Orientation o;
     accel.getAcceleration(&ax, &ay, &az);
