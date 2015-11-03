@@ -1,0 +1,13 @@
+{
+  "name": "I2Cdevlib-APDS9900",
+  "keywords": "ambian light sensor, proximity sensor, sensor, i2cdevlib, i2c",
+  "description": "The APDS-9900/9901 provides digital ambient light sensing (ALS), IR LED and a complete proximity detection system in a single 8 pin package",
+  "include": "Arduino/APDS9900",
+  "dependencies":
+  {
+    "name": "I2Cdevlib-Core",
+    "frameworks": "arduino"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
