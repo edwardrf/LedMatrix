@@ -46,7 +46,7 @@ void initLed() {
   pinMode(A3, OUTPUT);
   // digitalWrite(A3, HIGH);
 
-  Timer1.initialize(15);
+  Timer1.initialize(150);
   Timer1.attachInterrupt(updateDisplay);
   Timer1.stop();
 }
@@ -86,7 +86,8 @@ void resumeAnimation() {
 
 void updateFrame() {
   unsigned long t = millis();
-  if(running && t - frameStartTime > currentFrame.frameTime * speedFactor) {
+  int limit = (currentFrame.frameTime > 100 && speedFactor < 0.6) ? 10 : currentFrame.frameTime * speedFactor;
+  if(running && t - frameStartTime > limit) {
     // Preapre the next frame
     framePointer ++;
     if(framePointer >= animation->frameCount) {

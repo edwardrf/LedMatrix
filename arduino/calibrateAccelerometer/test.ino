@@ -21,13 +21,17 @@ void setup() {
   // initialize device
   Serial.println("Initializing I2C devices...");
   accel.initialize();
-  accel.setRange(0); // 2g range
+  //accel.setRange(0); // 2g range
+  accel.setRange(3); // 16g range
+  accel.setFullResolution(1);
 
   // Test
   Serial.println("Testing device connections...");
   Serial.println(accel.testConnection() ? "ADXL345 connection successful" : "ADXL345 connection failed");
   Serial.print("Range : ");
-  Serial.println(accel.getRange() );
+  Serial.println(accel.getRange());
+  Serial.print("Full Resolution : ");
+  Serial.println(accel.getFullResolution());
 
   // Retrive previous calibration value if exists
   int8_t calibrated = EEPROM.read(0);
@@ -79,7 +83,24 @@ void setup() {
   // At 2g range, the readings has a range of 3.9mg/LSB thus, the value needs to be devided by 4;
   xoffset = -sx / sampleSize / 4;
   yoffset = -sy / sampleSize / 4;
-  zoffset = (-sz / sampleSize - 255) / 4;
+  //zoffset = (-sz / sampleSize - 255) / 4;
+  zoffset = ((-sz) / sampleSize - 255) / 4.0;
+
+  Serial.print("Total offsets\tx:");
+  Serial.print(sx); Serial.print("\ty:");
+  Serial.print(sy); Serial.print("\tz:");
+  Serial.print((-sz) / sampleSize); Serial.print("\tz:");
+  Serial.print((-sz) / sampleSize - 255); Serial.print("\tz:");
+  Serial.print(((-sz) / sampleSize - 255) / 4); Serial.print("\tz:");
+  Serial.print(zoffset); Serial.print("\tz:");
+  Serial.print(sz);
+  Serial.println();
+  
+  // At 16g range, the readings has a range of 3.9 * 8 = 31.2mg/LSB thus, the value needs to be multiply by 2;
+  // xoffset = -sx / sampleSize * 2;
+  // yoffset = -sy / sampleSize * 2;
+  // zoffset = (-sz / sampleSize - 32) * 2;
+  //zoffset = -127;
 
   accel.setOffset(xoffset, yoffset, zoffset);
   Serial.print("Accel OFFSETS\tx:");

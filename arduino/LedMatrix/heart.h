@@ -237,7 +237,7 @@ const Frame heartFrames[] PROGMEM = {
   		 0x00000000
   	},
     150
-  },
+  }
 };
 
 Animation heart = {18, heartFrames};

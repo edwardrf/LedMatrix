@@ -1,0 +1,13 @@
+{
+  "name": "I2Cdevlib-AP3216C",
+  "keywords": "ambian light sensor, proximity sensor, sensor, i2cdevlib, i2c",
+  "description": "LITE-ON SEMICONDUCTOR CORP. AP3216C, 3-in-1 Digital ALS + PS + IRLED Module",
+  "include": "Arduino/AP3216C",
+  "dependencies":
+  {
+    "name": "I2Cdevlib-Core",
+    "frameworks": "arduino"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}

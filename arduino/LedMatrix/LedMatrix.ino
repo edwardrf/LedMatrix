@@ -32,7 +32,7 @@ void setup(){
   toMode = NORMAL;
   // setAnimation(&animations[3], true);
   startAnimation();
-  setBrightness(1);
+  setBrightness(7);
   // setSpeed(0.8);
   // Initialize accelerometer
   TWBR = ((F_CPU / 400000) - 16) / 2; // faster 400khz I2C, rather than the default 100khz
@@ -78,6 +78,7 @@ unsigned long intStart = 0;
 double soundLevel = 0;
 unsigned int lightLevel = 0;
 bool lightChecked = 0;
+int snd, lastSnd;
 
 void loop(){
   // Update to next frame when necessary, this has to be called
@@ -86,12 +87,17 @@ void loop(){
   updateFrame();
 
   // Check Sound
-  int snd = analogRead(SOUND_IN);
-  int sndDiff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
-  if(sndDiff > 30){
-    speed = 0.2; // Faster beat
-  }
-  soundLevel = (soundLevel * 90 + snd * 10) / 100;
+  snd = analogRead(SOUND_IN);
+  int dsnd = snd > lastSnd ? snd - lastSnd : lastSnd - snd;
+  // if()
+  soundLevel = (soundLevel * 90 + dsnd * 10) / 100;
+  // Serial.print(dsnd); Serial.print('\t');
+  // Serial.println(soundLevel);
+  lastSnd = snd;
+  // int sndDiff = snd > soundLevel ? snd - soundLevel : soundLevel - snd;
+  // if(sndDiff > 30){
+  //   speed = 0.2; // Faster beat
+  // }
 
   // Check Light
   // int lit = analogRead(LIGHT_IN);
@@ -106,11 +112,11 @@ void loop(){
   if(lastAccCheck - t > 200) {
 
     if(lightChecked) {
-      lightLevel = apds.getLux();
+      // lightLevel = apds.getLux();
       // Serial.println(lightLevel);
       lightChecked = false;
     }else {
-      apds.initialize();
+      // apds.initialize();
       lightChecked = true;
     }
 
@@ -151,7 +157,7 @@ void loop(){
     // Serial.print("================Switch to mode "); Serial.print(toMode); Serial.print("\t"); Serial.println(intStart);
     switch(toMode) {
     case NORMAL:
-      setAnimation(&animations[4], true);
+      setAnimation(&animations[2], true);
       break;
     case SOUND_INT:
       setAnimation(&animations[2], true);
